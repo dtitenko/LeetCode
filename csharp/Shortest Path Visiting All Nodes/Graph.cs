@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 public class Graph
@@ -9,6 +10,18 @@ public class Graph
     private readonly int _vertices;
     private int _edges;
     private readonly List<int>[] _adjacentVertices;
+
+    public Graph(int[][] input) : this(input.Length)
+    {
+        for (var i = 0; i < input.Length; i++)
+        {
+            foreach (var vertex in input[i])
+            {
+                if (!AdjacentVertices(i).Contains(vertex))
+                    AddEdge(i, vertex);
+            }
+        }
+    }
 
     public Graph(int vertices)
     {
@@ -61,7 +74,7 @@ public class Graph
 
     public override string ToString()
     {
-        StringBuilder s = new StringBuilder();
+        var s = new StringBuilder();
         s.Append(_vertices + " vertices, " + _edges + " edges " + Newline);
         for (int v = 0; v < _vertices; v++)
         {
