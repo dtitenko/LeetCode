@@ -11,6 +11,10 @@ class Program
         Solution(input1);
         var input2 = JsonConvert.DeserializeObject<int[][]>("[[1],[0,2,4,5],[1,3,4],[2],[1,2],[1]]");
         Solution(input2);
+        var input3 = JsonConvert.DeserializeObject<int[][]>("[[2,3],[7],[0,6],[0,4,7],[3,8],[7],[2],[5,3,1],[4]]");
+        Solution(input3);
+        var input4 = JsonConvert.DeserializeObject<int[][]>("[[1],[0,2,4],[1,3],[2],[1,5],[4]]");
+        Solution(input4);
     }
 
     static void Solution(int[][] input)

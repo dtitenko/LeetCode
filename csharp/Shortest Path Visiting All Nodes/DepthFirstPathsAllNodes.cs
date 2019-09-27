@@ -8,25 +8,28 @@ using System.Linq;
 public class DepthFirstPathsAllNodes
 {
     private readonly bool[] _marked;
-    private int _start;
 
     public DepthFirstPathsAllNodes(Graph graph)
     {
         _marked = new bool[graph.Vertices()];
-        _start = 0;
-        var min = int.MaxValue;
-        for (int i = 0; i < graph.Vertices(); i++)
-        {
-            if (graph.AdjacentVertices(i).Count < min)
-            {
-                _start = i;
-                min = graph.AdjacentVertices(i).Count;
-            }
-        }
     }
 
-    public List<int> Dfs(Graph graph) =>
-        Dfs(graph, _start, null);
+    public List<int> Dfs(Graph graph)
+    {
+        var min = int.MaxValue;
+        List<int> minPath = null;
+        for (int i = 0; i < graph.Vertices(); i++)
+        {
+            var path = Dfs(graph, i, null);
+            if (path.Count < min)
+            {
+                minPath = path;
+                min = path.Count;
+            }
+        }
+
+        return minPath;
+    }
 
     private List<int> Dfs(Graph graph, int v, int? from)
     {
@@ -60,13 +63,26 @@ public class DepthFirstPathsAllNodes
             }
         }
 
+        int[] toRevert = null;
         foreach (var child in children.OrderBy(c => c.Count))
         {
+            if (toRevert != null)
+            {
+                path.AddRange(toRevert);
+                toRevert = null;
+            }
+
             if (path.Count > 1)
             {
                 path.Add(v);
             }
+
             path.AddRange(child);
+            if (child.Count > 1)
+            {
+                toRevert = new int[child.Count - 1];
+                Array.Copy(child.ToArray(), toRevert, child.Count - 1);
+            }
         }
 
         _marked[v] = false;
