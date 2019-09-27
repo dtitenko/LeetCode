@@ -82,6 +82,7 @@ public class DepthFirstPathsAllNodes
             {
                 toRevert = new int[child.Count - 1];
                 Array.Copy(child.ToArray(), toRevert, child.Count - 1);
+                Array.Reverse(toRevert);
             }
         }
 
