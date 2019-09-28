@@ -19,10 +19,8 @@ class Program
         Solution(input5);
     }
 
-    static void Solution(int[][] input)
+    static void Solution(int[][] graph)
     {
-        var graph = new Graph(input);
-
         var dfp = new DepthFirstPathsAllNodes(graph);
         var path = dfp.Dfs(graph);
         Console.WriteLine(string.Join(" -> ", path));
