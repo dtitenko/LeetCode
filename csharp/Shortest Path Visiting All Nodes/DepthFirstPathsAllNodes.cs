@@ -21,21 +21,22 @@ public class DepthFirstPathsAllNodes
         for (int i = 0; i < graph.Vertices(); i++)
         {
             var path = Dfs(graph, i, null);
-            if (path.Count < min)
+            if (path.Path.Count < min)
             {
-                minPath = path;
-                min = path.Count;
+                minPath = path.Path;
+                min = path.Path.Count;
             }
         }
 
         return minPath;
     }
 
-    private List<int> Dfs(Graph graph, int v, int? from)
+    private (List<int> Path, List<int> Return) Dfs(Graph graph, int v, int? from)
     {
         var path = new List<int>(new[] {v});
+        var returnPath = new List<int>();
         _marked[v] = true;
-        var children = new List<List<int>>();
+        var children = new List<(List<int> Path, List<int> Return)>();
 
         var adjacent = graph.AdjacentVertices(v);
         for (int i = 0; i < adjacent.Count; i++)
@@ -47,10 +48,10 @@ public class DepthFirstPathsAllNodes
             for (int j = 0; j < children.Count; j++)
             {
                 var child = children[j];
-                if (!childPath.Except(child).Any())
+                if (!childPath.Path.Except(child.Path).Any())
                 {
                     found = true;
-                    if (childPath.Count < child.Count)
+                    if (!child.Path.Except(childPath.Path).Any() && childPath.Path.Count < child.Path.Count)
                     {
                         children[j] = childPath;
                     }
@@ -63,8 +64,9 @@ public class DepthFirstPathsAllNodes
             }
         }
 
-        int[] toRevert = null;
-        foreach (var child in children.OrderBy(c => c.Count))
+        List<int> toRevert = null;
+        var childrenToMerge = children.OrderBy(c => c.Path.Count).ToArray();
+        foreach (var child in childrenToMerge)
         {
             if (toRevert != null)
             {
@@ -77,17 +79,21 @@ public class DepthFirstPathsAllNodes
                 path.Add(v);
             }
 
-            path.AddRange(child);
-            if (child.Count > 1)
+            path.AddRange(child.Path);
+            if (child.Path.Count > 1)
             {
-                toRevert = new int[child.Count - 1];
-                Array.Copy(child.ToArray(), toRevert, child.Count - 1);
-                Array.Reverse(toRevert);
+                toRevert = child.Return;
             }
+        }
+
+        if (childrenToMerge.Any())
+        {
+            returnPath.AddRange(childrenToMerge[^1].Return);
+            returnPath.Add(v);
         }
 
         _marked[v] = false;
 
-        return path;
+        return (path, returnPath);
     }
 }
