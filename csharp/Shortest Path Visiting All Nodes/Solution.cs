@@ -12,7 +12,8 @@ public class Solution
         {
         }
 
-        return graph.Length - 1 + graph.Sum(v => Math.Max(v.Count - 2, 0));
+        // edges + sum of the edges above 2 for every vertex
+        return (graph.Length - 1) + graph.Sum(v => Math.Max(v.Count - 2, 0));
     }
 
     private bool RemoveCycles(List<int>[] graph, int v, bool[] visited, int parent, Stack<int> path)
@@ -44,30 +45,29 @@ public class Solution
     {
         // backtrack the cycle to find one with max adjacent vertices
         var node = currentNode;
-        var maxNodeIndex = 0;
-        var max = graph[node].Count;
+        var maxNode = 0;
+        var maxEdges = graph[node].Count;
         var cycle = new List<int> {currentNode};
         while (path.Count > 0)
         {
             node = path.Pop();
             if (node == currentNode) break;
-            if (max < graph[node].Count)
-            {
-                max = graph[node].Count;
-                maxNodeIndex = cycle.Count;
-            }
-
             cycle.Add(node);
+            if (maxEdges < graph[node].Count)
+            {
+                maxEdges = graph[node].Count;
+                maxNode = cycle.Count - 1;
+            }
         }
 
         // finding the neighbor with most edges
-        var leftNeighbor = maxNodeIndex > 0 ? maxNodeIndex - 1 : cycle.Count - 1;
-        var rightNeighbor = maxNodeIndex + 1 < cycle.Count ? maxNodeIndex + 1 : 0;
+        var leftNeighbor = maxNode > 0 ? maxNode - 1 : cycle.Count - 1;
+        var rightNeighbor = maxNode + 1 < cycle.Count ? maxNode + 1 : 0;
         var maxNodeNeighbor = graph[cycle[leftNeighbor]].Count > graph[cycle[rightNeighbor]].Count
             ? leftNeighbor
             : rightNeighbor;
 
-        var v1 = cycle[maxNodeIndex];
+        var v1 = cycle[maxNode];
         var v2 = cycle[maxNodeNeighbor];
         graph[v1].Remove(v2);
         graph[v2].Remove(v1);
