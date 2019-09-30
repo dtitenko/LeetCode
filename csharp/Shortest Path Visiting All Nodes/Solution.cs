@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 public class Solution
 {
@@ -11,8 +12,11 @@ public class Solution
         {
         }
 
+        Console.WriteLine(JsonConvert.SerializeObject(graph));
+
         var roots = new Dictionary<int, List<int>>();
         var min = int.MaxValue;
+        var maxNodes = 0;
         var root = -1;
         for (var index = 0; index < graph.Length; index++)
         {
@@ -21,19 +25,28 @@ public class Solution
             var v = graph[index];
             if (v.Count <= 2) continue;
             var max = 0;
+            var depthCount = 0;
+            Console.WriteLine($"index: {index}");
             foreach (var node in v)
             {
                 var visited = new bool[graph.Length];
                 visited[index] = true;
                 var depth = Depth(graph, node, visited);
-                depths.Add(depth);
+                if (depth > 1)
+                {
+                    depthCount++;
+                    depths.Add(depth);
+                    Console.WriteLine($"   depth: {depth}");
+                }
+
                 max = Math.Max(depth, max);
             }
 
-            if (min > max)
+            if (min > max || depthCount > maxNodes)
             {
                 root = index;
                 min = max;
+                maxNodes = depthCount;
             }
         }
 
@@ -41,6 +54,8 @@ public class Solution
         if (root != -1)
         {
             var rootNodes = root != -1 ? roots[root] : new List<int>();
+            Console.WriteLine(root);
+            Console.WriteLine(JsonConvert.SerializeObject(rootNodes));
             rootNodes.Remove(rootNodes.Max());
             rootNodes.Remove(rootNodes.Max());
             depthSum = rootNodes.Sum(n => Math.Max(n - 1, 0));
@@ -95,7 +110,7 @@ public class Solution
         var node = currentNode;
         var maxNode = 0;
         var maxEdges = graph[node].Count;
-        var cycle = new List<int> {currentNode};
+        var cycle = new List<int> { currentNode };
         while (path.Count > 0)
         {
             node = path.Pop();
@@ -111,9 +126,9 @@ public class Solution
         // finding the neighbor with most edges
         var leftNeighbor = maxNode > 0 ? maxNode - 1 : cycle.Count - 1;
         var rightNeighbor = maxNode + 1 < cycle.Count ? maxNode + 1 : 0;
-        var maxNodeNeighbor = graph[cycle[leftNeighbor]].Count > graph[cycle[rightNeighbor]].Count
-            ? leftNeighbor
-            : rightNeighbor;
+        var maxNodeNeighbor = graph[cycle[leftNeighbor]].Count < graph[cycle[rightNeighbor]].Count
+            ? rightNeighbor
+            : leftNeighbor;
 
         var v1 = cycle[maxNode];
         var v2 = cycle[maxNodeNeighbor];
