@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 
 public class Solution
 {
@@ -12,8 +11,57 @@ public class Solution
         {
         }
 
+        var roots = new Dictionary<int, List<int>>();
+        var min = int.MaxValue;
+        var root = -1;
+        for (var index = 0; index < graph.Length; index++)
+        {
+            var depths = new List<int>();
+            roots.Add(index, depths);
+            var v = graph[index];
+            if (v.Count <= 2) continue;
+            var max = 0;
+            foreach (var node in v)
+            {
+                var visited = new bool[graph.Length];
+                visited[index] = true;
+                var depth = Depth(graph, node, visited);
+                depths.Add(depth);
+                max = Math.Max(depth, max);
+            }
+
+            if (min > max)
+            {
+                root = index;
+                min = max;
+            }
+        }
+
+        var depthSum = 0;
+        if (root != -1)
+        {
+            var rootNodes = root != -1 ? roots[root] : new List<int>();
+            rootNodes.Remove(rootNodes.Max());
+            rootNodes.Remove(rootNodes.Max());
+            depthSum = rootNodes.Sum(n => Math.Max(n - 1, 0));
+        }
+
         // edges + sum of the edges above 2 for every vertex
-        return (graph.Length - 1) + graph.Sum(v => Math.Max(v.Count - 2, 0));
+        return (graph.Length - 1) + graph.Sum(v => Math.Max(v.Count - 2, 0)) + depthSum;
+    }
+
+    private int Depth(List<int>[] graph, int v, bool[] visited)
+    {
+        if (visited[v]) return 0;
+        visited[v] = true;
+        var max = 0;
+        foreach (var node in graph[v])
+        {
+            var depth = Depth(graph, node, visited);
+            max = Math.Max(max, depth);
+        }
+
+        return max + 1;
     }
 
     private bool RemoveCycles(List<int>[] graph, int v, bool[] visited, int parent, Stack<int> path)
