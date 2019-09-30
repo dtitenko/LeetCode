@@ -8,12 +8,33 @@ public class Solution
     public int ShortestPathLength(int[][] source)
     {
         var graph = source.Select(v => v.ToList()).ToArray();
-        while (RemoveCycles(graph, 0, new bool[graph.Length], -1, new Stack<int>()))
+        while (RemoveCycles(graph, 0, new bool[graph.Length], -1, new Stack<int>(), false))
         {
         }
 
         Console.WriteLine(JsonConvert.SerializeObject(graph));
 
+        var threeNodes = graph.Sum(v => Math.Max(v.Count - 2, 0));
+        var depthSum = DepthSum(graph);
+        var sum = threeNodes + depthSum;
+
+        graph = source.Select(v => v.ToList()).ToArray();
+        while (RemoveCycles(graph, 0, new bool[graph.Length], -1, new Stack<int>(), true))
+        {
+        }
+
+        Console.WriteLine(JsonConvert.SerializeObject(graph));
+
+        threeNodes = graph.Sum(v => Math.Max(v.Count - 2, 0));
+        depthSum = DepthSum(graph);
+        sum = Math.Min(threeNodes + depthSum, sum);
+
+        // edges + sum of the edges above 2 for every vertex
+        return (graph.Length - 1) + sum;
+    }
+
+    private int DepthSum(List<int>[] graph)
+    {
         var roots = new Dictionary<int, List<int>>();
         var min = int.MaxValue;
         var maxNodes = 0;
@@ -56,13 +77,14 @@ public class Solution
             var rootNodes = root != -1 ? roots[root] : new List<int>();
             Console.WriteLine(root);
             Console.WriteLine(JsonConvert.SerializeObject(rootNodes));
-            rootNodes.Remove(rootNodes.Max());
-            rootNodes.Remove(rootNodes.Max());
-            depthSum = rootNodes.Sum(n => Math.Max(n - 1, 0));
+            if (rootNodes.Count > 0)
+                rootNodes.Remove(rootNodes.Max());
+            if (rootNodes.Count > 0)
+                rootNodes.Remove(rootNodes.Max());
+            depthSum = rootNodes.Count > 0 ? rootNodes.Sum(n => Math.Max(n - 1, 0)) : 0;
         }
 
-        // edges + sum of the edges above 2 for every vertex
-        return (graph.Length - 1) + graph.Sum(v => Math.Max(v.Count - 2, 0)) + depthSum;
+        return depthSum;
     }
 
     private int Depth(List<int>[] graph, int v, bool[] visited)
@@ -79,7 +101,7 @@ public class Solution
         return max + 1;
     }
 
-    private bool RemoveCycles(List<int>[] graph, int v, bool[] visited, int parent, Stack<int> path)
+    private bool RemoveCycles(List<int>[] graph, int v, bool[] visited, int parent, Stack<int> path, bool rightChild)
     {
         visited[v] = true;
         path.Push(v);
@@ -89,12 +111,12 @@ public class Solution
             var i = graph[v][index];
             if (!visited[i])
             {
-                if (RemoveCycles(graph, i, visited, v, path))
+                if (RemoveCycles(graph, i, visited, v, path, rightChild))
                     return true;
             }
             else if (i != parent)
             {
-                RemoveCycle(graph, path, i);
+                RemoveCycle(graph, path, i, rightChild);
                 return true;
             }
         }
@@ -104,7 +126,7 @@ public class Solution
         return false;
     }
 
-    private void RemoveCycle(List<int>[] graph, Stack<int> path, int currentNode)
+    private void RemoveCycle(List<int>[] graph, Stack<int> path, int currentNode, bool rightChild)
     {
         // backtrack the cycle to find one with max adjacent vertices
         var node = currentNode;
@@ -126,9 +148,13 @@ public class Solution
         // finding the neighbor with most edges
         var leftNeighbor = maxNode > 0 ? maxNode - 1 : cycle.Count - 1;
         var rightNeighbor = maxNode + 1 < cycle.Count ? maxNode + 1 : 0;
-        var maxNodeNeighbor = graph[cycle[leftNeighbor]].Count < graph[cycle[rightNeighbor]].Count
-            ? rightNeighbor
-            : leftNeighbor;
+        var maxNodeNeighbor = graph[cycle[leftNeighbor]].Count > graph[cycle[rightNeighbor]].Count
+            ? leftNeighbor
+            : rightNeighbor;
+        if (graph[cycle[leftNeighbor]].Count == graph[cycle[rightNeighbor]].Count)
+        {
+            maxNodeNeighbor = rightChild ? rightNeighbor : leftNeighbor;
+        }
 
         var v1 = cycle[maxNode];
         var v2 = cycle[maxNodeNeighbor];
