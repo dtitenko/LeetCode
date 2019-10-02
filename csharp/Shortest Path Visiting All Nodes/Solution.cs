@@ -63,7 +63,7 @@ public class Solution
                 max = Math.Max(depth, max);
             }
 
-            if (min > max || depthCount > maxNodes)
+            if (depthCount > maxNodes)
             {
                 root = index;
                 min = max;

@@ -33,12 +33,19 @@ class Program
             var graph = JsonConvert.DeserializeObject<int[][]>(@case.Key);
             var result = solution.ShortestPathLength(graph);
             Console.SetOut(origOut);
+            var key = @case.Key;
+            key = key.Length > 30 ? $"{key.Substring(0, 10)}...{key.Substring(@case.Key.Length - 10)}" : key;
             if (result != @case.Value)
             {
+                Console.WriteLine("----------------------");
                 Console.WriteLine(tw);
-                Console.WriteLine($"           {@case.Key}");
+                Console.WriteLine($"           {key}");
                 Console.WriteLine($"{result == @case.Value} result: {result}; expected: {@case.Value};");
                 Console.WriteLine("----------------------");
+            }
+            else
+            {
+                Console.WriteLine($"{key}: true");
             }
         }
     }
