@@ -5,6 +5,11 @@ using Newtonsoft.Json;
 
 public class Solution
 {
+    /// <summary>
+    /// The solution consists of two parts:
+    /// - removing cycles to ease further analysis and calculations
+    /// - finds the depth of the branches to calculate returns in the graph
+    /// </summary>
     public int ShortestPathLength(int[][] source)
     {
         var graph = source.Select(v => v.ToList()).ToArray();
@@ -14,6 +19,9 @@ public class Solution
 
         Console.WriteLine(JsonConvert.SerializeObject(graph));
 
+        // three-nodes are the nodes with more than 2 edges
+        // which means you'll have to return at least once for every extra edge
+        // REFACTOR: this might be in depth calculation
         var threeNodes = graph.Sum(v => Math.Max(v.Count - 2, 0));
         var depthSum = DepthSum(graph);
         var sum = threeNodes + depthSum;
@@ -33,10 +41,14 @@ public class Solution
         return (graph.Length - 1) + sum;
     }
 
+    /// <summary>
+    /// - Identifies the root of the graph
+    /// - excludes an entry and an exit branches from the calculation
+    /// - Takes the sum of the depths (returns from the branches)
+    /// </summary>
     private int DepthSum(List<int>[] graph)
     {
         var roots = new Dictionary<int, List<int>>();
-        var min = int.MaxValue;
         var maxNodes = 0;
         var root = -1;
         for (var index = 0; index < graph.Length; index++)
@@ -45,7 +57,6 @@ public class Solution
             roots.Add(index, depths);
             var v = graph[index];
             if (v.Count <= 2) continue;
-            var max = 0;
             var depthCount = 0;
             Console.WriteLine($"index: {index}");
             foreach (var node in v)
@@ -59,14 +70,11 @@ public class Solution
                     depths.Add(depth);
                     Console.WriteLine($"   depth: {depth}");
                 }
-
-                max = Math.Max(depth, max);
             }
 
             if (depthCount > maxNodes)
             {
                 root = index;
-                min = max;
                 maxNodes = depthCount;
             }
         }
@@ -77,6 +85,7 @@ public class Solution
             var rootNodes = root != -1 ? roots[root] : new List<int>();
             Console.WriteLine(root);
             Console.WriteLine(JsonConvert.SerializeObject(rootNodes));
+            // removing entry and exit from the graph
             if (rootNodes.Count > 0)
                 rootNodes.Remove(rootNodes.Max());
             if (rootNodes.Count > 0)
