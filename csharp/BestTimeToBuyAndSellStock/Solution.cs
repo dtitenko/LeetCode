@@ -33,27 +33,40 @@ public class Solution
 {
     public int MaxProfit(int[] prices)
     {
-        var len = prices.Length;
+        return MaxProfit(2, prices);
+    }
+
+    public int MaxProfit(int k, int[] prices)
+    {
+        int len = prices.Length;
         if (len <= 1) return 0;
+        if (k >= len / 2) return QuickSolve(prices);
 
-        var sellingProfit = new int[len];
+        var t = new int[k + 1][];
+        for (var i = 0; i < t.Length; i++)
+            t[i] = new int[len];
 
-        var sell = prices[len - 1];
-        for (var i = len - 2; i >= 0; i--)
+        for (var i = 1; i <= k; i++)
         {
-            sell = Math.Max(sell, prices[i]);
-            sellingProfit[i] = Math.Max(sellingProfit[i + 1], sell - prices[i]);
+            int max = -prices[0];
+            for (var j = 1; j < len; j++)
+            {
+                t[i][j] = Math.Max(t[i][j - 1], prices[j] + max);
+                max = Math.Max(max, t[i - 1][j - 1] - prices[j]);
+            }
         }
 
-        var buy = prices[0];
-        var maxProfit = 0;
-        for (var i = 1; i < len; i++)
-        {
-            buy = Math.Min(prices[i], buy);
-            maxProfit = Math.Max(maxProfit, prices[i] - buy + sellingProfit[i]);
-        }
+        return t[k][len - 1];
+    }
 
-        return maxProfit;
+    private int QuickSolve(int[] prices)
+    {
+        int len = prices.Length, profit = 0;
+        for (int i = 1; i < len; i++)
+            // as long as there is a price gap, we gain a profit.
+            if (prices[i] > prices[i - 1])
+                profit += prices[i] - prices[i - 1];
+        return profit;
     }
 }
 
