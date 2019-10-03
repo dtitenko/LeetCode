@@ -9,11 +9,12 @@ class Program
     {
         var cases = new Dictionary<string, int>
         {
-            {"[3,3,5,0,0,3,1,4]", 6},
-            {"[1,2,3,4,5]", 4},
-            {"[7,6,4,3,1]", 0},
-            {"[2,1,4,5,2,9,7]", 11},
-            {"[1,2,4,2,5,7,2,4,9,0]", 13},
+            { "[3,3,5,0,0,3,1,4]", 6 },
+            { "[1,2,3,4,5]", 4 },
+            { "[7,6,4,3,1]", 0 },
+            { "[2,1,4,5,2,9,7]", 11 },
+            { "[1,2,4,2,5,7,2,4,9,0]", 13 },
+            { "[1,2]", 1 },
         };
         var solution = new Solution();
         foreach (var (input, expected) in cases)
@@ -35,26 +36,21 @@ public class Solution
         var len = prices.Length;
         if (len <= 1) return 0;
 
-        var forwardProfit = new int[len];
-        var backwardProfit = new int[len];
-        var buy = prices[0];
-        for (var i = 1; i < len; i++)
-        {
-            buy = Math.Min(prices[i], buy);
-            forwardProfit[i] = Math.Max(forwardProfit[i - 1], prices[i] - buy);
-        }
+        var sellingProfit = new int[len];
 
         var sell = prices[len - 1];
         for (var i = len - 2; i >= 0; i--)
         {
             sell = Math.Max(sell, prices[i]);
-            backwardProfit[i] = Math.Max(backwardProfit[i + 1], sell - prices[i]);
+            sellingProfit[i] = Math.Max(sellingProfit[i + 1], sell - prices[i]);
         }
 
+        var buy = prices[0];
         var maxProfit = 0;
-        for (var i = 0; i < len; i++)
+        for (var i = 1; i < len; i++)
         {
-            maxProfit = Math.Max(maxProfit, forwardProfit[i] + backwardProfit[i]);
+            buy = Math.Min(prices[i], buy);
+            maxProfit = Math.Max(maxProfit, prices[i] - buy + sellingProfit[i]);
         }
 
         return maxProfit;
