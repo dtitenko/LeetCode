@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Xunit;
 
-class Program
+class Program2
 {
-    public static void Main()
+    public static void Main2()
     {
         var cases = new Dictionary<string, int>
         {
@@ -67,22 +66,5 @@ public class Solution
             if (prices[i] > prices[i - 1])
                 profit += prices[i] - prices[i - 1];
         return profit;
-    }
-}
-
-public class Tests
-{
-    [Theory]
-    [InlineData("[3,3,5,0,0,3,1,4]", 6)]
-    [InlineData("[1,2,3,4,5]", 4)]
-    [InlineData("[7,6,4,3,1]", 0)]
-    public void ShouldSucceed(string @case, int expected)
-    {
-        var solution = new Solution();
-        var prices = JsonConvert.DeserializeObject<int[]>(@case);
-
-        var output = solution.MaxProfit(prices);
-
-        Assert.Equal(expected, output);
     }
 }

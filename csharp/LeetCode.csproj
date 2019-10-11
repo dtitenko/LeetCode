@@ -11,10 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="37 Sudoku Solver\**" />
     <Compile Remove="AddTwoNumbers\**" />
     <Compile Remove="BestTimeToBuyAndSellStock\**" />
-    <Compile Remove="BestTimeToBuyAndSellStockIII\**" />
     <Compile Remove="FindDuplicateNumber\**" />
     <Compile Remove="FirstMissingPositive\**" />
     <Compile Remove="LinkedListCycle\**" />
@@ -30,10 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Remove="37 Sudoku Solver\**" />
     <EmbeddedResource Remove="AddTwoNumbers\**" />
     <EmbeddedResource Remove="BestTimeToBuyAndSellStock\**" />
-    <EmbeddedResource Remove="BestTimeToBuyAndSellStockIII\**" />
     <EmbeddedResource Remove="FindDuplicateNumber\**" />
     <EmbeddedResource Remove="FirstMissingPositive\**" />
     <EmbeddedResource Remove="LinkedListCycle\**" />
@@ -44,10 +40,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="37 Sudoku Solver\**" />
     <None Remove="AddTwoNumbers\**" />
     <None Remove="BestTimeToBuyAndSellStock\**" />
-    <None Remove="BestTimeToBuyAndSellStockIII\**" />
     <None Remove="FindDuplicateNumber\**" />
     <None Remove="FirstMissingPositive\**" />
     <None Remove="LinkedListCycle\**" />

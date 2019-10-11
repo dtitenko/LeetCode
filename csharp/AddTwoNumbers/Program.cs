@@ -3,24 +3,24 @@
 
 namespace AddTwoNumbers
 {
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            var solution = new Solution();
-            var first = new ListNode(0);
-            // first.Add(8);
-            var second = new ListNode(1);
-            second.Add(8);
-            var node = solution.AddTwoNumbers(first, second);
-
-            while (node != null)
-            {
-                Console.WriteLine(node.val);
-                node = node.next;
-            }
-        }
-    }
+    // class Program
+    // {
+    //     static void Main(string[] args)
+    //     {
+    //         var solution = new Solution();
+    //         var first = new ListNode(0);
+    //         // first.Add(8);
+    //         var second = new ListNode(1);
+    //         second.Add(8);
+    //         var node = solution.AddTwoNumbers(first, second);
+    //
+    //         while (node != null)
+    //         {
+    //             Console.WriteLine(node.val);
+    //             node = node.next;
+    //         }
+    //     }
+    // }
 
     public class Solution
     {

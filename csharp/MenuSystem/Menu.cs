@@ -89,21 +89,41 @@
 
         private Item GetChoice(Item[] items)
         {
-            _console.Write("Please select one option: ");
-            Item selectedItem;
-            if (items.All(i => i.Accessor.Length == 1))
+            var accessor = "";
+            Item selectedItem = null;
+            _console.Write($"Please select one option: ");
+            while (selectedItem == null)
             {
+                var position = System.Console.CursorLeft;
+                _console.Write(accessor);
                 var keyPressed = _console.ReadKey();
-                selectedItem = items.FirstOrDefault(x => x.Accessor[0] == keyPressed.KeyChar);
+                if (keyPressed.Key == ConsoleKey.Backspace && accessor.Length > 0)
+                {
+                    accessor = accessor.Substring(0, accessor.Length - 1);
+                    _console.Write(" ");
+                    System.Console.CursorLeft = System.Console.CursorLeft - 1;
+                    continue;
+                }
+
+                accessor += keyPressed.KeyChar;
+
+                var selectedItems = items.Where(x => x.Accessor.StartsWith(accessor)).ToList();
+                if (selectedItems.Count == 1)
+                {
+                    selectedItem = selectedItems[0];
+                    continue;
+                }
+
+                if (selectedItems.Count == 0)
+                {
+                    break;
+                }
+
+                System.Console.CursorLeft = position;
             }
-            else
-            {
-                var line = _console.ReadLine();
-                selectedItem = items.FirstOrDefault(x => x.Accessor == line);
-            }
-            
-            _console.WriteLine("");
-            
+
+            Console.WriteLine("");
+
             if (selectedItem == null)
             {
                 _console.WriteLine("Unknown option.", ConsoleColor.Red);
@@ -135,7 +155,7 @@
                     key = item.Accessor;
                 }
 
-                table.AddRow($"( {key} ) --> ", item.Name);
+                table.AddRow($"({key}) --> ", item.Name);
             }
 
             _console.WriteLine(table.ToString(_console.BufferWidth, printHeaders: false));

@@ -42,15 +42,29 @@ namespace LeetCode
                             {
                                 var input = @case.Item1;
                                 var expected = @case.Item2;
+                                var expectedStr = JsonConvert.SerializeObject(expected);
+
                                 var result = ((dynamic)solution).Execute(input);
+
+                                var resultStr = JsonConvert.SerializeObject(result);
                                 var originalColor = Console.ForegroundColor;
-                                Console.ForegroundColor = expected == result ? ConsoleColor.Green : ConsoleColor.Red;
-                                Console.WriteLine($"{JsonConvert.SerializeObject(input)} expected: {expected}, result {result}");
+                                Console.ForegroundColor =
+                                    expectedStr == resultStr ? ConsoleColor.Green : ConsoleColor.Red;
+                                var report = $"{JsonConvert.SerializeObject(input)} expected: {expectedStr}, result {resultStr}";
+                                if (report.Length > Console.LargestWindowWidth)
+                                {
+                                    report = $@"{JsonConvert.SerializeObject(input)}
+- expected: {expectedStr}
+- result {resultStr}";
+                                }
+                                Console.WriteLine(report);
                                 Console.ForegroundColor = originalColor;
                             }
                         }),
                     Menu.Item.GoUp));
             }
+
+            menu.Add(new Menu.Item("q", "Quit", c => c.CloseAndReturn("0")));
 
             menu.Show();
         }
