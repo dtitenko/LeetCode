@@ -11,8 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="AddTwoNumbers\**" />
-    <Compile Remove="BestTimeToBuyAndSellStock\**" />
     <Compile Remove="FindDuplicateNumber\**" />
     <Compile Remove="FirstMissingPositive\**" />
     <Compile Remove="LinkedListCycle\**" />
@@ -20,16 +18,9 @@
     <Compile Remove="Shortest Path Visiting All Nodes\**" />
     <Compile Remove="ShortestSubarray\**" />
     <Compile Remove="SubarraysWIthDifferentIntegers\**" />
-    <Compile Remove="Problem_149_Max_points_on_a_line.cs" />
-    <Compile Remove="Problem_166._Fraction_to_Recurring_Decimal.cs" />
-    <Compile Remove="Problem_381_Insert-delete-getrandom-o1-duplicates-allowed.cs" />
-    <Compile Remove="Problem_4_Median_of_2_arrays.cs" />
-    <Compile Remove="Problem_92_ReverseLinkedList2.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Remove="AddTwoNumbers\**" />
-    <EmbeddedResource Remove="BestTimeToBuyAndSellStock\**" />
     <EmbeddedResource Remove="FindDuplicateNumber\**" />
     <EmbeddedResource Remove="FirstMissingPositive\**" />
     <EmbeddedResource Remove="LinkedListCycle\**" />
@@ -40,8 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="AddTwoNumbers\**" />
-    <None Remove="BestTimeToBuyAndSellStock\**" />
     <None Remove="FindDuplicateNumber\**" />
     <None Remove="FirstMissingPositive\**" />
     <None Remove="LinkedListCycle\**" />

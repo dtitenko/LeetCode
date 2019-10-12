@@ -1,36 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using LeetCode;
 using Newtonsoft.Json;
 
-class Program2
+public class BestTimeToBuyAndSellStock4 : ISolution<int[], int>
 {
-    public static void Main2()
+    public string Name => "188. Best Time to Buy and Sell Stock IV";
+    public string Link => "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/";
+
+    public (int[], int)[] TestCases
     {
-        var cases = new Dictionary<string, int>
+        get
         {
-            { "[3,3,5,0,0,3,1,4]", 6 },
-            { "[1,2,3,4,5]", 4 },
-            { "[7,6,4,3,1]", 0 },
-            { "[2,1,4,5,2,9,7]", 11 },
-            { "[1,2,4,2,5,7,2,4,9,0]", 13 },
-            { "[1,2]", 1 },
-        };
-        var solution = new Solution();
-        foreach (var (input, expected) in cases)
-        {
-            var prices = JsonConvert.DeserializeObject<int[]>(input);
-            var output = solution.MaxProfit(prices);
-            var color = Console.ForegroundColor;
-            Console.ForegroundColor = expected == output ? ConsoleColor.Green : ConsoleColor.Red;
-            Console.WriteLine($"{input} expected: {expected}, result {output}");
-            Console.ForegroundColor = color;
+            var cases = new Dictionary<string, int>
+            {
+                {"[3,3,5,0,0,3,1,4]", 6},
+                {"[1,2,3,4,5]", 4},
+                {"[7,6,4,3,1]", 0},
+                {"[2,1,4,5,2,9,7]", 11},
+                {"[1,2,4,2,5,7,2,4,9,0]", 13},
+                {"[1,2]", 1},
+            };
+            return cases.Select(c => (JsonConvert.DeserializeObject<int[]>(c.Key), c.Value)).ToArray();
         }
     }
-}
 
-public class Solution
-{
-    public int MaxProfit(int[] prices)
+    public int Execute(int[] prices)
     {
         return MaxProfit(2, prices);
     }
