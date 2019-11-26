@@ -20,11 +20,14 @@ public class MinimumWindowSubstring : ISolution<(string, string), string>
 
     public string MinWindow(string s, string t)
     {
+        if (s.Length == 0 || t.Length == 0) return "";
+        
         int left = 0;
         int right = 0;
         int formed = 0;
         var window = new Dictionary<char, int>();
         var tChars = new Dictionary<char, int>();
+        var source = new List<Tuple<int, char>>();
 
         foreach (var tth in t)
         {
@@ -32,10 +35,19 @@ public class MinimumWindowSubstring : ISolution<(string, string), string>
             tChars[tth] = count + 1;
         }
 
-        int[] ans = {-1, 0, 0};
-        while (right < s.Length)
+        for (var i = 0; i < s.Length; i++)
         {
-            var c = s[right];
+            var sth = s[i];
+            if (tChars.ContainsKey(sth))
+            {
+                source.Add(Tuple.Create(i, sth));
+            }
+        }
+
+        int[] ans = {-1, 0, 0};
+        while (right < source.Count)
+        {
+            var c = source[right].Item2;
             window.TryGetValue(c, out var count);
             window[c] = count + 1;
             if (tChars.ContainsKey(c) && window[c] == tChars[c])
@@ -45,12 +57,14 @@ public class MinimumWindowSubstring : ISolution<(string, string), string>
 
             while (left <= right && formed == tChars.Count)
             {
-                c = s[left];
-                if (ans[0] == -1 || right - left + 1 < ans[0])
+                c = source[left].Item2;
+                var end = source[right].Item1;
+                var start = source[left].Item1;
+                if (ans[0] == -1 || end - start + 1 < ans[0])
                 {
-                    ans[0] = right - left + 1;
-                    ans[1] = left;
-                    ans[2] = right;
+                    ans[0] = end - start + 1;
+                    ans[1] = start;
+                    ans[2] = end;
                 }
 
                 window[c]--;
