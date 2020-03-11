@@ -2,7 +2,7 @@
 # Time: O(n^2)
 # Space: O(N)
 
-def sort(stack):
+def sort(stack: list):
     r = []
     while len(stack) > 0:
         temp = stack.pop()

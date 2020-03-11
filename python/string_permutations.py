@@ -3,7 +3,7 @@
 
 # using Rabin-Karp Substring Search
 
-def permutations(s="", b=""):
+def permutations(s: str, b: str) -> None:
     sLen = len(s)
     bLen = len(b)
     if sLen > bLen:
